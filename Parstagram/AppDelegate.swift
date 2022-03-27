@@ -12,6 +12,9 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // sleep 0.5s, show the launch screen
+        usleep(useconds_t(500_000))
 
         let parseConfig = ParseClientConfiguration {
             $0.applicationId = APIToken().appId // <- UPDATE
