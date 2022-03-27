@@ -6,6 +6,7 @@
 //
 
 import AlamofireImage
+import Parse
 import PhotosUI
 import UIKit
 
@@ -24,7 +25,7 @@ class CameraViewController: UIViewController, PHPickerViewControllerDelegate {
         let itemProviders = results.map(\.itemProvider)
         for provider in itemProviders {
             if provider.canLoadObject(ofClass: UIImage.self) {
-                provider.loadObject(ofClass: UIImage.self) { (image, error) in
+                provider.loadObject(ofClass: UIImage.self) { image, _ in
                     DispatchQueue.main.async {
                         if let image = image as? UIImage {
                             // scale image
@@ -47,10 +48,29 @@ class CameraViewController: UIViewController, PHPickerViewControllerDelegate {
         
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
-        self.present(picker, animated: true, completion: nil)
+        present(picker, animated: true, completion: nil)
     }
     
-    @IBAction func onSubmitButton(_ sender: Any) {}
+    @IBAction func onSubmitButton(_ sender: Any) {
+        let post = PFObject(className: "Posts")
+        
+        post["caption"] = commentField.text
+        post["author"] = PFUser.current()
+        
+        if let imageData = imageView.image?.pngData() {
+            let file = PFFileObject(name: "image.png", data: imageData)
+            post["image"] = file
+        }
+        
+        post.saveInBackground { success, error in
+            if success {
+                self.dismiss(animated: true, completion: nil)
+                print("Post saved")
+            } else {
+                print("Post saving failed: \(String(describing: error?.localizedDescription))")
+            }
+        }
+    }
     
     /*
      // MARK: - Navigation

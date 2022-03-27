@@ -20,29 +20,29 @@ class LoginViewController: UIViewController {
 
     @IBAction func onLogIn(_ sender: Any) {
         // TODO: check if username and password are valid and non-empty
-        
-        PFUser.logInWithUsername(inBackground: usernameField.text!, password: passwordField.text!) { (user: PFUser?, error: Error?) -> Void in
+
+        PFUser.logInWithUsername(inBackground: usernameField.text!, password: passwordField.text!) { (user: PFUser?, error: Error?) in
             if user != nil {
                 self.performSegue(withIdentifier: "loginSegue", sender: nil)
             } else {
-                print("Error: \(error?.localizedDescription)")
+                print("Error: \(String(describing: error?.localizedDescription))")
             }
         }
     }
 
     @IBAction func onSignUp(_ sender: Any) {
         // TODO: check if username and password are valid and non-empty
-        
+
         // sign up
         let user = PFUser()
         user.username = usernameField.text
         user.password = passwordField.text
-        
-        user.signUpInBackground() { (success, error) in
+
+        user.signUpInBackground { success, error in
             if success {
                 self.performSegue(withIdentifier: "loginSegue", sender: nil)
             } else {
-                print("Error: \(error?.localizedDescription)")
+                print("Error: \(String(describing: error?.localizedDescription))")
             }
         }
     }
