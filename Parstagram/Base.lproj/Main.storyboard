@@ -244,7 +244,7 @@
         <!--Navigation Controller-->
         <scene sceneID="MW8-Wc-O9G">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="K5C-gn-PnW" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="FeedNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="K5C-gn-PnW" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="yuP-f0-jQK">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
