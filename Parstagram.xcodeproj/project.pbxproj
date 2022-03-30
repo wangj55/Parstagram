@@ -16,6 +16,7 @@
 		8C69D1A427E6E4D3008C1661 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C69D1A327E6E4D3008C1661 /* Assets.xcassets */; };
 		8C69D1A727E6E4D3008C1661 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C69D1A527E6E4D3008C1661 /* LaunchScreen.storyboard */; };
 		8C69D1AF27E6EB72008C1661 /* APIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C69D1AE27E6EB72008C1661 /* APIToken.swift */; };
+		8C723E5127F5087700D48303 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C723E5027F5087700D48303 /* CommentCell.swift */; };
 		8CF3219F27F002D800B1779E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF3219E27F002D800B1779E /* LoginViewController.swift */; };
 		8CF321A127F0034300B1779E /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF321A027F0034300B1779E /* FeedViewController.swift */; };
 /* End PBXBuildFile section */
@@ -31,6 +32,7 @@
 		8C69D1A627E6E4D3008C1661 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8C69D1A827E6E4D3008C1661 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C69D1AE27E6EB72008C1661 /* APIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIToken.swift; sourceTree = "<group>"; };
+		8C723E5027F5087700D48303 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		8CF3219E27F002D800B1779E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		8CF321A027F0034300B1779E /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		8DB22C18AD2C40B27AF32076 /* Pods_Parstagram.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Parstagram.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +92,7 @@
 				8CF321A027F0034300B1779E /* FeedViewController.swift */,
 				8C23651227F0ADE10092C172 /* CameraViewController.swift */,
 				8C23651427F11DF00092C172 /* PostCell.swift */,
+				8C723E5027F5087700D48303 /* CommentCell.swift */,
 			);
 			path = Parstagram;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				8CF3219F27F002D800B1779E /* LoginViewController.swift in Sources */,
 				8C69D19D27E6E4D0008C1661 /* SceneDelegate.swift in Sources */,
 				8C23651327F0ADE10092C172 /* CameraViewController.swift in Sources */,
+				8C723E5127F5087700D48303 /* CommentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

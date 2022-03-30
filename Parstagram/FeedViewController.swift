@@ -25,7 +25,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidAppear(animated)
 
         let query = PFQuery(className: "Posts")
-        query.includeKey("author")
+        query.includeKeys(["author", "comments", "comments.author"])
         query.limit = 20
 
         query.findObjectsInBackground { posts, _ in
@@ -46,25 +46,46 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        posts.count
+        let post = posts[section]
+        let comments = post["comments"] as? [PFObject] ?? []
+
+        return 1 + comments.count // each post and its many comments
     }
 
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return posts.count
+    }
+
+    // What to display in each cell.
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostCell
+        let post = posts[indexPath.section]
+        let comments = post["comments"] as? [PFObject] ?? []
 
-        let post = posts[indexPath.row]
-        let user = post["author"] as! PFUser
+        if indexPath.row == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostCell
 
-        cell.usernameLabel.text = user.username
-        cell.captionLabel.text = post["caption"] as? String
+            let user = post["author"] as! PFUser
 
-        let imageFile = post["image"] as! PFFileObject
-        let usrString = imageFile.url!
-        let url = URL(string: usrString)!
+            cell.usernameLabel.text = user.username
+            cell.captionLabel.text = post["caption"] as? String
 
-        cell.photoView.af.setImage(withURL: url)
+            let imageFile = post["image"] as! PFFileObject
+            let usrString = imageFile.url!
+            let url = URL(string: usrString)!
 
-        return cell
+            cell.photoView.af.setImage(withURL: url)
+
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell") as! CommentCell
+            let comment = comments[indexPath.row-1]
+            if let user = comment["author"] as? PFUser {
+                cell.nameLabel.text = user.username
+            }
+            cell.commentLabel.text = comment["text"] as? String ?? "Text"
+
+            return cell
+        }
     }
 
     // What to do when a row is selected.
