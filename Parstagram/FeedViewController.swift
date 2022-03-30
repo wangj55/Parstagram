@@ -67,6 +67,25 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
 
+    // What to do when a row is selected.
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+
+        let comment = PFObject(className: "Comments")
+        comment["text"] = "This is an auto-generated comments."
+        comment["post"] = post
+        comment["author"] = PFUser.current()
+
+        post.add(comment, forKey: "comments")
+        post.saveInBackground { success, error in
+            if success {
+                print("Comment saved.")
+            } else {
+                print("Error at saving comment: \(String(describing: error?.localizedDescription))")
+            }
+        }
+    }
+
     /*
      // MARK: - Navigation
 
