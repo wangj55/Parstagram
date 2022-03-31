@@ -6,19 +6,47 @@
 //
 
 import AlamofireImage
+import MessageInputBar
 import Parse
 import UIKit
 
-class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MessageInputBarDelegate {
     @IBOutlet var tableView: UITableView!
+
+    let commentBar = MessageInputBar()
+    var showCommentBar: Bool = false
 
     var posts = [PFObject]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        commentBar.inputTextView.placeholder = "Add a comment..."
+        commentBar.sendButton.title = "Post"
+        commentBar.delegate = self
+
         tableView.dataSource = self
         tableView.delegate = self
+
+        tableView.keyboardDismissMode = .interactive
+
+        let center = NotificationCenter.default
+
+        center.addObserver(self, selector: #selector(keyboardWillBeHidden(note:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc func keyboardWillBeHidden(note: Notification) {
+        commentBar.inputTextView.text = nil
+        showCommentBar = false
+        becomeFirstResponder()
+    }
+
+    override var inputAccessoryView: UIView? {
+        return commentBar
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return showCommentBar
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -45,11 +73,29 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         delegate.window?.rootViewController = loginViewController
     }
 
+    func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        // create the comment
+
+        // clear the comment
+        commentBar.inputTextView.text = nil
+        showCommentBar = false
+        becomeFirstResponder()
+        commentBar.inputTextView.resignFirstResponder()
+    }
+
+//    func messageInputBar(_ inputBar: MessageInputBar, didChangeIntrinsicContentTo size: CGSize) {
+//        <#code#>
+//    }
+//
+//    func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {
+//        <#code#>
+//    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let post = posts[section]
         let comments = post["comments"] as? [PFObject] ?? []
 
-        return 1 + comments.count // each post and its many comments
+        return comments.count + 2 // each post and its many comments
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -76,13 +122,17 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.photoView.af.setImage(withURL: url)
 
             return cell
-        } else {
+        } else if indexPath.row <= comments.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell") as! CommentCell
-            let comment = comments[indexPath.row-1]
+            let comment = comments[indexPath.row - 1]
             if let user = comment["author"] as? PFUser {
                 cell.nameLabel.text = user.username
             }
             cell.commentLabel.text = comment["text"] as? String ?? "Text"
+
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddCommentCell")!
 
             return cell
         }
@@ -90,21 +140,28 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     // What to do when a row is selected.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let post = posts[indexPath.row]
+        let post = posts[indexPath.section]
+//        let comment = PFObject(className: "Comments")
+        let comments = post["comments"] as? [PFObject] ?? []
 
-        let comment = PFObject(className: "Comments")
-        comment["text"] = "This is an auto-generated comments."
-        comment["post"] = post
-        comment["author"] = PFUser.current()
-
-        post.add(comment, forKey: "comments")
-        post.saveInBackground { success, error in
-            if success {
-                print("Comment saved.")
-            } else {
-                print("Error at saving comment: \(String(describing: error?.localizedDescription))")
-            }
+        if indexPath.row == comments.count + 1 {
+            showCommentBar = true
+            becomeFirstResponder()
+            commentBar.inputTextView.becomeFirstResponder()
         }
+
+//        comment["text"] = "This is an auto-generated comments."
+//        comment["post"] = post
+//        comment["author"] = PFUser.current()
+//
+//        post.add(comment, forKey: "comments")
+//        post.saveInBackground { success, error in
+//            if success {
+//                print("Comment saved.")
+//            } else {
+//                print("Error at saving comment: \(String(describing: error?.localizedDescription))")
+//            }
+//        }
     }
 
     /*
