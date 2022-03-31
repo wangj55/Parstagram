@@ -17,6 +17,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var showCommentBar: Bool = false
 
     var posts = [PFObject]()
+    var selectedPost: PFObject!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +65,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
 
+    /// Log Out is pressed.
     @IBAction func onLogOut(_ sender: Any) {
         PFUser.logOut()
 
@@ -75,6 +77,21 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
         // create the comment
+        let comment = PFObject(className: "Comments")
+        comment["text"] = text
+        comment["post"] = selectedPost
+        comment["author"] = PFUser.current()
+
+        selectedPost.add(comment, forKey: "comments")
+        selectedPost.saveInBackground { success, error in
+            if success {
+                print("Comment saved.")
+            } else {
+                print("Error at saving comment: \(String(describing: error?.localizedDescription))")
+            }
+        }
+
+        tableView.reloadData()
 
         // clear the comment
         commentBar.inputTextView.text = nil
@@ -82,14 +99,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         becomeFirstResponder()
         commentBar.inputTextView.resignFirstResponder()
     }
-
-//    func messageInputBar(_ inputBar: MessageInputBar, didChangeIntrinsicContentTo size: CGSize) {
-//        <#code#>
-//    }
-//
-//    func messageInputBar(_ inputBar: MessageInputBar, textViewTextDidChangeTo text: String) {
-//        <#code#>
-//    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let post = posts[section]
@@ -138,30 +147,18 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
 
-    // What to do when a row is selected.
+    // A row is selected.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let post = posts[indexPath.section]
-//        let comment = PFObject(className: "Comments")
         let comments = post["comments"] as? [PFObject] ?? []
 
+        // AddCommentBar is selected
         if indexPath.row == comments.count + 1 {
             showCommentBar = true
             becomeFirstResponder()
             commentBar.inputTextView.becomeFirstResponder()
+            selectedPost = post
         }
-
-//        comment["text"] = "This is an auto-generated comments."
-//        comment["post"] = post
-//        comment["author"] = PFUser.current()
-//
-//        post.add(comment, forKey: "comments")
-//        post.saveInBackground { success, error in
-//            if success {
-//                print("Comment saved.")
-//            } else {
-//                print("Error at saving comment: \(String(describing: error?.localizedDescription))")
-//            }
-//        }
     }
 
     /*
